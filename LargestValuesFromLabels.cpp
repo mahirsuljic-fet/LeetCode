@@ -3,9 +3,48 @@
 #include <algorithm>
 #include <cstring>
 #include <queue>
+#include <utility>
 #include <vector>
 
-class Solution
+class Solution1
+{
+  public:
+    int largestValsFromLabels(std::vector<int>& values, std::vector<int>& labels, int numWanted, int useLimit)
+    {
+      int max_label = *std::max_element(labels.begin(), labels.end()) + 1;
+      int uses[max_label];
+      int result = 0;
+
+      std::memset(uses, 0, max_label * sizeof(int));
+
+      std::vector<std::pair<int, int>> items;
+      items.reserve(values.size());
+
+      for (int i = 0; i < values.size(); ++i)
+        items.push_back({ values[i], labels[i] });
+
+      std::sort(items.begin(), items.end());
+
+      for (int i = 0; i < numWanted; ++i)
+      {
+        while (!items.empty())
+        {
+          if (uses[items.back().second]++ < useLimit)
+          {
+            result += items.back().first;
+            items.pop_back();
+            break;
+          }
+          else
+            items.pop_back();
+        }
+      }
+
+      return result;
+    }
+};
+
+class Solution2
 {
   public:
     struct Item
